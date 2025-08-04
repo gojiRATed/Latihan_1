@@ -42,11 +42,11 @@
                 </svg>  
             </div>
             <div>
-                <h1 style="font-family: monospace; text-align: center">
-                    Dari Surabaya ke Mojokerto
+                <h1 style="font-family: monospace; text-align: center" id="typing-title">
+                    <!-- Dari Surabaya ke Mojokerto -->
                 </h1>
-                <p style="font-family: monospace; font-size: 1rem; text-align: center">
-                    Sedikit cerita dari keluarga saya
+                <p style="font-family: monospace; font-size: 1rem; text-align: center" id="typing-subtitle">
+                   <!-- Sedikit cerita dari keluarga saya -->
                 </p>
             </div>
             <div style="display: flex; justify-content: center;">
@@ -58,28 +58,109 @@
             </div>
         </div>
         <div style="color: whitesmoke; margin-top: 50px">
-            <h2 style="font-family: monospace; margin-bottom: 25px">
-                Keluarga Saya berasal dari Surabaya
+            <h2 style="font-family: monospace; margin-bottom: 25px" id="typing-subtitle2">
+                <!-- Keluarga Saya berasal dari Surabaya -->
             </h2>
-            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px">
-                Ayah dan Ibu bekerja di galeri "Cantika", dan memulai usaha sampingan
-                produksi "Bumbu Rujak Manis Bu Ulis".
+            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px" id="typing-paragraf1">
+                <!-- Ayah dan Ibu bekerja di galeri "Cantika", dan memulai usaha sampingan
+                produksi "Bumbu Rujak Manis Bu Ulis". -->
             </p>
-            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px">
-                Setelah beberapa bulan, Galeri Cantika tutup dan Ayah dan Ibu
-                memutuskan untuk memindahkan usaha ke Mojokerto.
+            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px" id="typing-paragraf2">
+                <!-- Setelah beberapa bulan, Galeri Cantika tutup dan Ayah dan Ibu
+                memutuskan untuk memindahkan usaha ke Mojokerto. -->
             </p>
-            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px">
-                Sambal khas mereka disukai warga Mojokerto. Saya dan kakak membantu
-                Ayah dan Ibu dalam memproduksi sambal.
+            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px" id="typing-paragraf3">
+                <!-- Sambal khas mereka disukai warga Mojokerto dan sekitarnya. Saya dan kakak membantu
+                Ayah dan Ibu dalam memproduksi sambal. -->
             </p>
-            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px">
-                Seiring waktu, pesanan sambal botolan dari “Bumbu Rujak Manis Bu Ulis”
+            <p style="font-family: monospace; font-size: 1rem; margin-left: 10px" id="typing-paragraf4">
+                <!-- Seiring waktu, pesanan sambal botolan dari “Bumbu Rujak Manis Bu Ulis”
                 terus meningkat. Banyak pelanggan dari luar kota dan luar pulau yang
-                tertarik setelah melihat ulasan positif di Google Maps.
+                tertarik setelah melihat ulasan positif di Google Maps.-->
             </p>
         </div>
     </div>
+
+<script>
+    
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    let skipRequested = false;
+    let currentIndex = 0;
+
+    async function typeWriter(element, text, speed) {
+        if (!element) return;
+        element.textContent = "";
+        for (let i = 0; i < text.length; i++) {
+            if (skipRequested) {
+                element.textContent = text;
+                return;
+            }
+            element.textContent += text.charAt(i);
+            await delay(speed);
+        }
+    }
+
+    function revealAll(sequence, fromIndex = 0) {
+        for (let i = fromIndex; i < sequence.length; i++) {
+            const item = sequence[i];
+            const el = document.getElementById(item.id);
+            if (el) el.textContent = item.text;
+        }
+    }
+
+    function setupSkipHandler(sequence) {
+        const triggerSkip = () => {
+            if (skipRequested) return;
+            skipRequested = true;
+            revealAll(sequence, currentIndex);
+            removeListeners();
+        };
+        const onKey = (e) => {
+            if (e.code === "Escape" || e.code === "Space") {
+                triggerSkip();
+            }
+        };
+        const onClick = () => {
+            triggerSkip();
+        };
+        function removeListeners() {
+            document.removeEventListener("keydown", onKey);
+            document.removeEventListener("click", onClick);
+        }
+        document.addEventListener("keydown", onKey);
+        document.addEventListener("click", onClick);
+    }
+
+    window.addEventListener('load', async () => {
+        const sequence = [
+            { id: "typing-title", text: "Dari Surabaya ke Mojokerto", speed: 100 },
+            { id: "typing-subtitle", text: "Sedikit cerita dari keluarga saya", speed: 50 },
+            { id: "typing-subtitle2", text: "Keluarga saya berasal dari Surabaya", speed: 50 },
+            { id: "typing-paragraf1", text: "Ayah dan Ibu bekerja di galeri 'Cantika', dan memulai usaha sampingan produksi 'Bumbu Rujak Manis Bu Ulis'.", speed: 50 },
+            { id: "typing-paragraf2", text: "Setelah beberapa bulan, Galeri Cantika tutup dan Ayah dan Ibu memutuskan untuk memindahkan usaha ke Mojokerto.", speed: 50 },
+            { id: "typing-paragraf3", text: "Sambal khas mereka disukai warga Mojokerto dan sekitarnya. Saya dan kakak membantu Ayah dan Ibu dalam memproduksi sambal.", speed: 50 },
+            { id: "typing-paragraf4", text: "Seiring waktu, pesanan sambal botolan dari 'Bumbu Rujak Manis Bu Ulis' terus meningkat. Banyak pelanggan dari luar kota dan luar pulau yang tertarik setelah melihat ulasan positif di Google Maps.", speed: 50 },
+        ];
+
+        setupSkipHandler(sequence);
+
+        for (; currentIndex < sequence.length; currentIndex++) {
+            const item = sequence[currentIndex];
+            const el = document.getElementById(item.id);
+            await typeWriter(el, item.text, item.speed);
+            if (skipRequested) break;
+            await delay(300);
+        }
+
+        if (skipRequested && currentIndex < sequence.length - 1) {
+            revealAll(sequence, currentIndex + 1);
+        }
+    });
+</script>
+
 </body>
 
 </html>
